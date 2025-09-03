@@ -20,7 +20,7 @@ API RESTful desenvolvida com Node.js para gerenciar usuários e produtos. Este p
 
 ---
 
-##  проекта Sobre o Projeto
+##  Sobre o Projeto
 
 Este projeto implementa uma API de web services utilizando Node.js e Express. Ele gerencia duas entidades principais: Usuários e Produtos, e inclui um sistema de autenticação via JWT para proteger rotas específicas. O objetivo é fornecer uma base sólida e escalável para aplicações backend, seguindo as melhores práticas de desenvolvimento.
 
