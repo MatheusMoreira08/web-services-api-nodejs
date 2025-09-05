@@ -1,13 +1,14 @@
-const AuthOutput = require('../../DTOs/UserOutput');
-const InvalidCredentialsException = require('../../../Domain/Exceptions/InvalidCredentialsException');
+// src/Application/UseCases/Auth/LoginUser.js
+const AuthOutput = require('src/Application/DTOs/UserOutput');
+const InvalidCredentialsException = require('src/Domain/Exceptions/InvalidCredentialsException');
 
-class LoginUsers {
+class LoginUser {
   constructor(userRepository, jwtProvider) {
     this.userRepository = userRepository;
     this.jwtProvider = jwtProvider;
   }
 
-  async execute(input) { // input é uma instância de LoginUserInput
+  async execute(input) { // 'input' é uma instância de LoginUserInput
     const user = await this.userRepository.findByEmail(input.email);
 
     if (!user) {
@@ -25,9 +26,9 @@ class LoginUsers {
     return new AuthOutput(token, {
       id: user.id,
       name: user.name.value,
-      email: user.email.value,
+      email: user.email.value
     });
   }
 }
 
-module.exports = LoginUsers;
+module.exports = LoginUser;

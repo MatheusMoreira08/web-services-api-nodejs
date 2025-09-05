@@ -1,24 +1,27 @@
-const app = require('./app'); // Caminho corrigido para o ficheiro na mesma pasta
-const sequelize = require('./Infrastructure/Persistence/Sequelize/database');
-const UserModel = require('./Infrastructure/Persistence/Sequelize/models/UserModel');
-const { connectRedis } = require('./Infrastructure/Persistence/Redis/RedisClient');
-const config = require('./config/index');
+// src/server.js
+
+require('module-alias/register');
+
+const app = require('./app');
+const sequelize = require('src/Infrastructure/Persistence/Sequelize/database');
+const UserModel = require('src/Infrastructure/Persistence/Sequelize/models/UserModel');
+const { connectRedis } = require('src/Infrastructure/Persistence/Redis/RedisClient');
+const config = require('src/config/index');
 
 const PORT = config.server.port;
 
 async function startServer() {
   try {
-    // Sincroniza modelos com o banco de dados (ideal para desenvolvimento)
-    // Em produção, usar migrações (npx sequelize-cli db:migrate)
-    await sequelize.authenticate(); // Testa a conexão
-    await sequelize.sync({ alter: true }); // Cria tabelas se não existirem ou altera
+
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: true });
     console.log('Database connected and synchronized!');
 
-    await connectRedis(); // Conecta ao Redis
+    await connectRedis();
 
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-      console.log(`Acess API at http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Access API at http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
@@ -27,4 +30,3 @@ async function startServer() {
 }
 
 startServer();
-

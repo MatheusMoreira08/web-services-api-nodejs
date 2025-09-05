@@ -1,4 +1,7 @@
-// importações de pacotes e middlewares
+
+require('module-alias/register');
+
+// Importações de pacotes e middlewares
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -6,16 +9,16 @@ const swaggerUi = require('swagger-ui-express');
 const yaml = require('js-yaml');
 const fs = require('fs');
 
-// importações de infraestrutura
-const errorHandler = require('./Infrastructure/Express/middlewares/errorHandler');
-const SequelizeUserRepository = require('./Infrastructure/Persistence/Sequelize/SequelizeUserRepository');
-const RedisTokenBlacklistRepository = require('./Infrastructure/Persistence/Redis/RedisTokenBlacklistRepository');
-const JWTProvider = require('./Infrastructure/Providers/JWTProvider');
-const authRoutes = require('./Infrastructure/Express/routes/auth.routes');
+const errorHandler = require('src/Infrastructure/Express/middlewares/errorHandler');
+const SequelizeUserRepository = require('src/Infrastructure/Persistence/Sequelize/SequelizeUserRepository');
+const RedisTokenBlacklistRepository = require('src/Infrastructure/Persistence/Redis/RedisTokenBlacklistRepository');
+const JWTProvider = require('src/Infrastructure/Providers/JWTProvider');
+const authRoutes = require('src/Infrastructure/Express/routes/routes');
 
-// importações de casos de uso
-const RegisterUser = require('./application/UseCases/Auth/RegisterUser');
-const LoginUser = require('./Application/UseCases/Auth/LoginUsers');
+// Importações dos Use Cases
+const RegisterUser = require('./Application/UseCases/Auth/RegisterUser.js');
+const LoginUser = require('./Application/UseCases/Auth/LoginUser.js');
+const LogoutUser = require('./Application/UseCases/Auth/LogoutUser.js');
 
 const app = express();
 
@@ -24,37 +27,36 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 
-// injeção de dependências
-// repositórios
+
 const userRepository = new SequelizeUserRepository();
 const tokenBlacklistRepository = new RedisTokenBlacklistRepository();
 
-// provedores
+
 const jwtProvider = new JWTProvider();
 
-// use cases
+
 const registerUserUseCase = new RegisterUser(userRepository);
 const loginUserUseCase = new LoginUser(userRepository, jwtProvider);
+const logoutUserUseCase = new LogoutUser(tokenBlacklistRepository);
 
-// rotas da API
-app.use('/auth', authRoutes(registerUserUseCase, loginUserUseCase));
 
-// --- ROTA DE TESTE ADICIONADA AQUI ---
-// Esta rota responderá na página inicial.
-app.get('/', (req, res) => {
-  res.status(200).send('<h1>API Rodando com Sucesso!</h1><p>Seu ambiente Docker está 100% funcional.</p>');
-});
-// ------------------------------------
+app.use('/auth', authRoutes(
+  registerUserUseCase,
+  loginUserUseCase,
+  logoutUserUseCase,
+  tokenBlacklistRepository
+));
 
-// configuração do Swagger
+
 try {
   const swaggerDocument = yaml.load(fs.readFileSync('./docs/swagger.yml', 'utf8'));
+  // Acessível em http://localhost:3000/api-docs
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 } catch (e) {
   console.error('Failed to load swagger.yml file:', e);
 }
 
-// Middleware de tratamento de erros
+
 app.use(errorHandler);
 
 module.exports = app;

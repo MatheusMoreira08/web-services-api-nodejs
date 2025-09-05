@@ -1,9 +1,10 @@
+// src/Infrastructure/Providers/JWTProvider.js
 const jwt = require('jsonwebtoken');
-const config = require('../../config'); // Caminho corrigido
+const config = require('src/config');
 
 class JWTProvider {
   generateToken(payload) {
-    return jwt.sign(payload, config.jwt.secret, { expiresIn: config.jwt.expiresin });
+    return jwt.sign(payload, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
   }
 
   verifyToken(token) {

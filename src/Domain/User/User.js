@@ -1,22 +1,30 @@
 const Email = require('./ValueObjects/Email');
-const Password = require('./ValueObjects/Password'); // assumimos que password ja faz o hasing
+const Password = require('./ValueObjects/Password');
 const Name = require('./ValueObjects/Name');
 const { v4: uuidv4 } = require('uuid');
 
 class User {
-    constructor(name, email, password, id = uuidv4()) {
-        if (!name || !email || !password) {
+    constructor(name, email, plainPassword, id = uuidv4()) {
+        if (!id || !name || !email || !plainPassword) {
             throw new Error("User properties cannot be empty.");
         }
-
-        this.id = id; // uuid
+        this.id = id;
         this.name = new Name(name);
         this.email = new Email(email);
-        // password value object lida com hashing ao ser criado
-        this.password = new Password(password);
+
+        this.password = new Password(plainPassword);
     }
 
-    // metodos de comportamento de dominio
+
+    static hydrate(id, name, email, hashedPassword) {
+        const user = Object.create(User.prototype);
+        user.name = new Name(name);
+        user.email = new Email(email);
+
+        user.password = new Password(hashedPassword, true);
+        return user;
+    }
+
     async comparePassword(plainPassword) {
         return await this.password.compare(plainPassword);
     }
@@ -25,12 +33,12 @@ class User {
         this.password = new Password(newPassword);
     }
 
-    tooObject() {
+    toObject() {
         return {
             id: this.id,
             name: this.name.value,
             email: this.email.value,
-            password: this.password.hashedValue // EXPOR O HASH, NÃO A STRING PURA
+            password: this.password.hashedPassword
         };
     }
 }

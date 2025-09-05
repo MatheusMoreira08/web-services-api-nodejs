@@ -1,18 +1,22 @@
-const RegisterUserInput = require('../../../Application/DTOs/RegisterUserInput');
-const LoginUserInput = require('../../../Application/DTOs/LoginUserInput');
+// src/Infrastructure/Express/controllers/AuthController.js
+const RegisterUserInput = require('src/Application/DTOs/RegisterUserInput');
+const LoginUserInput = require('src/Application/DTOs/LoginUserInput');
 
 class AuthController {
-  constructor(registerUserUseCase, loginUserUseCase) {
+  // O construtor agora recebe o novo caso de uso de logout
+  constructor(registerUserUseCase, loginUserUseCase, logoutUserUseCase) {
     this.registerUserUseCase = registerUserUseCase;
     this.loginUserUseCase = loginUserUseCase;
+    this.logoutUserUseCase = logoutUserUseCase; // Adicionado
   }
 
   async register(req, res, next) {
     try {
       const { name, email, password } = req.body;
       const input = new RegisterUserInput(name, email, password);
-      const userOutput = await this.registerUserUseCase.execute(input);
-      return res.status(201).json(userOutput);
+      // O caso de uso de registro agora retorna um objeto simples
+      const user = await this.registerUserUseCase.execute(input);
+      return res.status(201).json(user);
     } catch (error) {
       next(error); // Encaminha para o middleware de tratamento de erros
     }
@@ -29,12 +33,17 @@ class AuthController {
     }
   }
 
+  // Lógica de logout implementada
   async logout(req, res, next) {
     try {
-      // Aqui você precisaria de um Use Case de logout ou lógica de aplicação para invalidar o token.
-      // Por exemplo:
-      const token = req.headers.authorization.split(' ')[1];
-      // await this.logoutUserUseCase.execute(token);
+
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1];
+
+      if (token) {
+        await this.logoutUserUseCase.execute(token);
+      }
+      
       return res.status(200).json({ message: 'Logged out successfully.' });
     } catch (error) {
       next(error);
