@@ -18,15 +18,12 @@ module.exports = (tokenBlacklistRepository) => async (req, res, next) => {
       return res.status(401).json({ message: 'Token has been revoked. Please log in again.' });
     }
 
-    const decoded = jwt.verify(token, config.jwt.secret);
-
+   
+    const decoded = jwt.verify(token, config.jwt.secret, { leeway: '3h' });
 
     req.user = decoded;
-
-
     next();
   } catch (error) {
-
     return res.status(401).json({ message: 'Invalid or expired token.' });
   }
 };
