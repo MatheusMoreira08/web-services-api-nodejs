@@ -1,5 +1,5 @@
 const errorHandler = (err, req, res, next) => {
-    console.error(err.stack); // Log do erro para depuração
+    console.error(err.stack); 
 
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Something went wrong!';
@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
     res.status(statusCode).json({
         status: 'error',
         message: message,
-        // Em produção, evite enviar detalhes de erro internos
+    
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
     });
 };

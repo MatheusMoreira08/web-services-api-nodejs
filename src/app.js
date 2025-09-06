@@ -1,4 +1,3 @@
-
 require('module-alias/register');
 
 // Importações de pacotes e middlewares
@@ -41,19 +40,24 @@ const logoutUserUseCase = new LogoutUser(tokenBlacklistRepository);
 
 
 app.use('/auth', authRoutes(
-  registerUserUseCase,
-  loginUserUseCase,
-  logoutUserUseCase,
-  tokenBlacklistRepository
+  registerUserUseCase,
+  loginUserUseCase,
+  logoutUserUseCase,
+  tokenBlacklistRepository
 ));
 
 
 try {
-  const swaggerDocument = yaml.load(fs.readFileSync('./docs/swagger.yml', 'utf8'));
-  // Acessível em http://localhost:3000/api-docs
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  const swaggerDocument = yaml.load(fs.readFileSync('./docs/swagger.yml', 'utf8'));
+  // Acessível em http://localhost:3001/api-docs
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+  app.get('/', (req, res) => {
+    res.redirect('/api-docs');
+  });
+
 } catch (e) {
-  console.error('Failed to load swagger.yml file:', e);
+  console.error('Failed to load swagger.yml file:', e);
 }
 
 

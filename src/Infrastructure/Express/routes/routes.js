@@ -2,7 +2,7 @@
 const { Router } = require('express');
 const AuthController = require('src/Infrastructure/Express/controllers/AuthController');
 const validate = require('src/Infrastructure/Express/middlewares/validationMiddleware');
-// AQUI ESTÁ A CORREÇÃO: Adicionado 's' em 'validationsSchemas'
+
 const { registerSchema, loginSchema } = require('src/Infrastructure/Express/validationSchemas/authSchemas');
 
 const createAuthMiddleware = require('src/Infrastructure/Express/middlewares/AuthMiddleware');

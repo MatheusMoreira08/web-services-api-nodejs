@@ -7,7 +7,7 @@ class Password {
             throw new Error("Password cannot be empty.");
         }
 
-        if (!isHashed && value.length < 6) { // Exemplo de regra de negócio: min 6 caracteres
+        if (!isHashed && value.length < 6) { 
             throw new Error("Password must be at least 6 characters long.");
         }
 
@@ -15,7 +15,7 @@ class Password {
     }
 
     hash(plainPassword) {
-        // Síncrono para simplificar, mas idealmente usar bcrypt.hash assíncrono
+       
         return bcrypt.hashSync(plainPassword, 10);
     }
 
