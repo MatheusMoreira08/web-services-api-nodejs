@@ -10,11 +10,11 @@ COPY package*.json ./
 # Instala as dependências
 RUN npm install
 
-# Copia o resto do código da sua aplicação
+# Copia o resto do código da aplicação
 COPY . .
 
-# Expõe a porta que sua aplicação usa
+# Expõe a porta que a aplicação usa
 EXPOSE 3001
 
-# Comando para iniciar sua aplicação
+# Comando para iniciar a aplicação
 CMD [ "npm", "start" ]

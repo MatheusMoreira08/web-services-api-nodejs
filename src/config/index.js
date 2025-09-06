@@ -17,12 +17,11 @@ const appConfig = {
     },
 };
 
-// Exporta a configuração da aplicação E a configuração do Sequelize juntas
+
 module.exports = {
-    // Mantém a configuração da aplicação
+    
     ...appConfig,
 
-    // Adiciona a configuração para o Sequelize CLI
     development: {
         url: appConfig.db.url,
         dialect: appConfig.db.dialect,

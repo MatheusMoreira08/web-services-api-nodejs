@@ -3,7 +3,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('src/config');
 
-// A função agora pode ser síncrona, o que simplifica o fluxo
+
 module.exports = (tokenBlacklistRepository) => async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];

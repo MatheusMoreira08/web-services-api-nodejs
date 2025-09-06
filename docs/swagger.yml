@@ -2,7 +2,7 @@
 
 openapi: 3.0.0
 info:
-  title: Login API
+  title: Login API em Node.js
   version: 1.0.0
   description: API para registro, login e logout de usuários com JWT e Redis.
 
@@ -24,10 +24,10 @@ paths:
               properties:
                 name:
                   type: string
-                  example: "João da Silva"
+                  example: "Matheus Moreira"
                 email:
                   type: string
-                  example: "joao.silva@example.com"
+                  example: "matheus.moreira@gmail.com"
                 password:
                   type: string
                   example: "password123"
@@ -50,7 +50,7 @@ paths:
               properties:
                 email:
                   type: string
-                  example: "joao.silva@example.com"
+                  example: "matheus.moreira@gmail.com"
                 password:
                   type: string
                   example: "password123"
@@ -65,7 +65,7 @@ paths:
       summary: Log out the current user
       tags: [Authentication]
       description: Invalidates the current user's JWT token by adding it to a blacklist.
-      # Indica que esta rota requer autenticação
+      
       security:
         - bearerAuth: [] 
       responses:
@@ -74,7 +74,6 @@ paths:
         '401':
           description: Unauthorized if token is missing, invalid, or already revoked
 
-# Define os esquemas de segurança para a API
 components:
   securitySchemes:
     bearerAuth:
